@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace CongestionFeeApp.Models
 {
-    public class TimeRangeCust
+    public class TimeSpanCust
     {
-        public DateTime Start { get; set; }
+        public TimeSpan TimeStamp {  get; set; }
 
-        public DateTime End { get; set; }
+        public string Type {  get; set; }
     }
 }

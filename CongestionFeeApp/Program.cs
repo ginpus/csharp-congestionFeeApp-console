@@ -11,7 +11,7 @@ namespace CongestionFeeApp
     {
         static void Main(string[] args)
         {
-            var timeRange = new TimeRangeCust
+            var range = new TimeRangeCust
             {
                 //StartTime = Ceiling(new DateTime (2021, 10, 21, 07, 37, 57), TimeSpan.FromSeconds(60)),
                 //EndTime = Floor(new DateTime(2021, 10, 21, 13, 37, 57), TimeSpan.FromSeconds(60))
@@ -43,123 +43,149 @@ namespace CongestionFeeApp
                 //Charge for 7h 0m(PM rate): £17.50
                //Total Charge: £24.80
 
-                StartTime = new DateTime(2008, 4, 25, 10, 23, 0),
-                EndTime = new DateTime(2008, 4, 28, 09, 2, 0)
+                Start = new DateTime(2008, 4, 25, 10, 23, 0),
+                End = new DateTime(2008, 4, 30, 11, 2, 0)
             };
 
-            var amStartHour = 7; // get from DB and put into array
+            if(range.Start > range.End)
+            {
+                throw new Exception("Invalid time expression - end time cannot be earlier than start time");
+            }
+
+            var amStartHour = 7; // get from DB and put into array. Or from appsettings
             var pmStartHour = 12;
             var pmEndHour = 19;
 
-            var daySplits = Enumerable.Range(0, (timeRange.EndTime.Date - timeRange.StartTime.Date).Days + 1)
-                  .Select(c => new TimeSplitCust
+            var amStart = new TimeSpan(amStartHour, 0, 0);
+            var pmStart = new TimeSpan(pmStartHour, 0, 0);
+            var pmEnd = new TimeSpan(pmEndHour, 0, 0);
+
+            var chargeThresholds = new List<TimeSpan> {
+                amStart,
+                pmStart,  
+                pmEnd};
+
+
+            var chargeDays = Enumerable.Range(0, (range.End.Date - range.Start.Date).Days + 1)
+                  .Select(d => new TimeSplitCust
                   {
-                      StartTime = Max(timeRange.StartTime.Date.AddDays(c), timeRange.StartTime),
-                      EndTime = Min(timeRange.StartTime.Date.AddDays(c + 1).AddMilliseconds(-1), timeRange.EndTime),
-                      WeekDay = Max(timeRange.StartTime.Date.AddDays(c), timeRange.StartTime).DayOfWeek                 
-                  });
+                      StartTime = Max(range.Start.Date.AddDays(d), range.Start),
+                      EndTime = Min(range.Start.Date.AddDays(d + 1).AddMilliseconds(-1), range.End),
+                      WeekDay = Max(range.Start.Date.AddDays(d), range.Start).DayOfWeek,
+                      Thresholds = new List<TimeSpan> { }
+                  })
+                  .Where(d => IsChargeableDay((int)d.WeekDay))
+                  .ToList();
 
-            var ranges = daySplits.ToList();
+            // for each range/period, that has charge > 0, create new List<TimeSpan> {}
 
-            var fullDayCharge = new List<TimeSplitCust> { };
+            for (var i = 0; i < chargeDays.Count; i++)
+            {
+                for (var j = 0; j< chargeThresholds.Count; j++) 
+                { 
+                    chargeDays[i].Thresholds.Add(chargeThresholds[j]);
+                }
+                if (i == 0)
+                {
+                    chargeDays[i].Thresholds
+                        .RemoveAll(d => d <= chargeDays[i].StartTime.TimeOfDay);
+                    chargeDays[i].Thresholds.Add(chargeDays[i].StartTime.TimeOfDay);
+                }
+                if (i == chargeDays.Count - 1)
+                {
+                    chargeDays[i].Thresholds
+                        .RemoveAll(d => d >= chargeDays[i].EndTime.TimeOfDay);
+                    chargeDays[i].Thresholds.Add(chargeDays[i].EndTime.TimeOfDay);
+                }
+                chargeDays[i].Thresholds = chargeDays[i].Thresholds
+                    .OrderBy(t => t.TotalMinutes).ToList();
+            }
 
+            
             var amChargeDuration = new List<TimeSpan> { };
-
             var pmChargeDuration = new List<TimeSpan> { };
 
-            for (var i = 0; i < ranges.Count; i++)
+            for (var i = 0; i < chargeDays.Count; i++)
             {
-                Console.WriteLine(ranges[i]);
-                var amStartTime = new DateTime(ranges[i].StartTime.Year, ranges[i].StartTime.Month, ranges[i].StartTime.Day, amStartHour, 0, 0);
-                var pmStartTime = new DateTime(ranges[i].EndTime.Year, ranges[i].EndTime.Month, ranges[i].EndTime.Day, pmStartHour, 0, 0);
-                var pmEndTime = new DateTime(ranges[i].EndTime.Year, ranges[i].EndTime.Month, ranges[i].EndTime.Day, pmEndHour, 0, 0);
+                Console.WriteLine(chargeDays[i]);
 
-                if (ranges[i].StartTime <= amStartTime  && 
-                    ranges[i].EndTime >= pmEndTime && 
-                    IsChargeableDay((int)ranges[i].WeekDay))
+                if (chargeDays[i].StartTime.TimeOfDay <= amStart  && 
+                    chargeDays[i].EndTime.TimeOfDay >= pmEnd)
                 {
                     Console.WriteLine("S0; P3");
-                    fullDayCharge.Add(ranges[i]);
-                    var amSlot = pmStartTime - amStartTime;
-                    var pmSlot = pmEndTime - pmStartTime;
+                    var amSlot = pmStart - amStart;
+                    var pmSlot = pmEnd - pmStart;
 
                     amChargeDuration.Add(amSlot);
                     pmChargeDuration.Add(pmSlot);
                 }
 
-                if (ranges[i].StartTime > amStartTime &&
-                    ranges[i].StartTime < pmStartTime &&
-                    ranges[i].EndTime >= pmEndTime &&
-                    IsChargeableDay((int)ranges[i].WeekDay))
+                if (chargeDays[i].StartTime.TimeOfDay > amStart &&
+                    chargeDays[i].StartTime.TimeOfDay < pmStart &&
+                    chargeDays[i].EndTime.TimeOfDay >= pmEnd)
                 {
                     Console.WriteLine("S1; P3");
-                    var amSlot = pmStartTime - ranges[i].StartTime;
-                    var pmSlot = pmEndTime - pmStartTime;
+                    var amSlot = pmStart - chargeDays[i].StartTime.TimeOfDay;
+                    var pmSlot = pmEnd - pmStart;
                     amChargeDuration.Add(amSlot);
                     pmChargeDuration.Add(pmSlot);
                 }
 
-                if (ranges[i].StartTime >= pmStartTime &&
-                    ranges[i].StartTime < pmEndTime &&
-                    ranges[i].EndTime >= pmEndTime &&
-                    IsChargeableDay((int)ranges[i].WeekDay))
+                if (chargeDays[i].StartTime.TimeOfDay >= pmStart &&
+                    chargeDays[i].StartTime.TimeOfDay < pmEnd &&
+                    chargeDays[i].EndTime.TimeOfDay >= pmEnd)
                 {
                     Console.WriteLine("S2; P3");
-                    var pmSlot = pmEndTime - ranges[i].StartTime;
+                    var pmSlot = pmEnd - chargeDays[i].StartTime.TimeOfDay;
                     pmChargeDuration.Add(pmSlot);
                 }
 
-                if (ranges[i].StartTime >= pmStartTime &&
-                    ranges[i].StartTime < pmEndTime &&
-                    ranges[i].EndTime < pmEndTime &&
-                    IsChargeableDay((int)ranges[i].WeekDay))
+                if (chargeDays[i].StartTime.TimeOfDay >= pmStart &&
+                    chargeDays[i].StartTime.TimeOfDay < pmEnd &&
+                    chargeDays[i].EndTime.TimeOfDay < pmEnd)
                 {
                     Console.WriteLine("S2; P2");
-                    var pmSlot = ranges[i].EndTime - ranges[i].StartTime;
+                    var pmSlot = chargeDays[i].EndTime.TimeOfDay - chargeDays[i].StartTime.TimeOfDay;
                     pmChargeDuration.Add(pmSlot);
                 }
 
-                if (ranges[i].StartTime > amStartTime &&
-                    ranges[i].StartTime < pmStartTime &&
-                    ranges[i].EndTime < pmEndTime &&
-                    ranges[i].EndTime > pmStartTime &&
-                    IsChargeableDay((int)ranges[i].WeekDay))
+                if (chargeDays[i].StartTime.TimeOfDay > amStart &&
+                    chargeDays[i].StartTime.TimeOfDay < pmStart &&
+                    chargeDays[i].EndTime.TimeOfDay < pmEnd &&
+                    chargeDays[i].EndTime.TimeOfDay > pmStart)
                 {
                     Console.WriteLine("S1; P2");
-                    var amSlot = pmStartTime - ranges[i].StartTime;
-                    var pmSlot = ranges[i].EndTime - pmStartTime;
+                    var amSlot = pmStart - chargeDays[i].StartTime.TimeOfDay;
+                    var pmSlot = chargeDays[i].EndTime.TimeOfDay - pmStart;
                     amChargeDuration.Add(amSlot);
                     pmChargeDuration.Add(pmSlot);
                 }
 
-                if (ranges[i].StartTime >= amStartTime &&
-                    ranges[i].StartTime < pmStartTime &&
-                    ranges[i].EndTime <= pmStartTime &&
-                    IsChargeableDay((int)ranges[i].WeekDay))
+                if (chargeDays[i].StartTime.TimeOfDay >= amStart &&
+                    chargeDays[i].StartTime.TimeOfDay < pmStart &&
+                    chargeDays[i].EndTime.TimeOfDay <= pmStart)
                 {
                     Console.WriteLine("S1; P1");
-                    var amSlot = ranges[i].EndTime - ranges[i].StartTime;
+                    var amSlot = chargeDays[i].EndTime.TimeOfDay - chargeDays[i].StartTime.TimeOfDay;
                     amChargeDuration.Add(amSlot);
                 }
 
-                if (ranges[i].StartTime <= amStartTime &&
-                    ranges[i].EndTime < pmEndTime &&
-                    ranges[i].EndTime > pmStartTime &&
-                    IsChargeableDay((int)ranges[i].WeekDay))
+                if (chargeDays[i].StartTime.TimeOfDay <= amStart &&
+                    chargeDays[i].EndTime.TimeOfDay < pmEnd &&
+                    chargeDays[i].EndTime.TimeOfDay > pmStart)
                 {
                     Console.WriteLine("S0; P1");
-                    var amSlot = pmStartTime - amStartTime;
-                    var pmSlot = ranges[i].EndTime - pmStartTime;
+                    var amSlot = pmStart - amStart;
+                    var pmSlot = chargeDays[i].EndTime.TimeOfDay - pmStart;
                     amChargeDuration.Add(amSlot);
                     pmChargeDuration.Add(pmSlot);
                 }
 
-                if (ranges[i].StartTime <= amStartTime &&
-                    ranges[i].EndTime <= pmStartTime &&
-                    IsChargeableDay((int)ranges[i].WeekDay))
+                if (chargeDays[i].StartTime.TimeOfDay <= amStart &&
+                    chargeDays[i].EndTime.TimeOfDay <= pmStart)
                 {
                     Console.WriteLine("S0; P1");
-                    var amSlot = ranges[i].EndTime - amStartTime;
+                    var amSlot = chargeDays[i].EndTime.TimeOfDay - amStart;
                     amChargeDuration.Add(amSlot);
                 }
 
@@ -169,34 +195,7 @@ namespace CongestionFeeApp
                 Console.WriteLine($"Charge for {Math.Floor(totalAmSpan.TotalHours)}h {totalAmSpan.Minutes}m (AM rate)");
                 Console.WriteLine($"Charge for {Math.Floor(totalPmSpan.TotalHours)}h {totalPmSpan.Minutes}m (PM rate)");
             }
-
-            Console.WriteLine();
-
-            for (var i = 0; i < amChargeDuration.Count; i++)
-            {
-                Console.WriteLine(amChargeDuration[i]);
-            }
-
-            /*DateTime chunkEnd;
-            while ((chunkEnd = timeRange.StartTime.AddMinutes(7)) < timeRange.EndTime)
-            {
-                yield return Tuple.Create(timeRange.StartTime, chunkEnd, timeRange.StartTime.DayOfWeek);
-                timeRange.StartTime = chunkEnd;
-            }
-            yield return Tuple.Create(timeRange.StartTime, timeRange.EndTime, timeRange.StartTime.DayOfWeek);*/
         }
-
-/*        public bool IsValidReservation(DateTime start, DateTime end)
-        {
-            if (!TimeCompare.IsSameDay(start, end))
-            {
-                return false;  // multiple day reservation
-            }
-
-            TimeRange workingHours =
-              new TimeRange(TimeTrim.Hour(start, 8), TimeTrim.Hour(start, 18));
-            return workingHours.HasInside(new TimeRange(start, end));
-        }*/
 
         public static DateTime Floor(DateTime dateTime, TimeSpan interval)
         {

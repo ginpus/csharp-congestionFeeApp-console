@@ -14,6 +14,8 @@ namespace CongestionFeeApp.Models
 
         public DayOfWeek WeekDay { get; set; }
 
+        public List<TimeSpan> Thresholds {  get; set; }
+
         public override string ToString()
         {
             return $"{StartTime}, {EndTime}, {WeekDay}";

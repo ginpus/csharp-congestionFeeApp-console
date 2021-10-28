@@ -15,4 +15,3 @@ C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\Congestio
 C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\CongestionFeeApp\obj\Debug\net5.0\CongestionFeeApp.pdb
 C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\CongestionFeeApp\obj\Debug\net5.0\CongestionFeeApp.genruntimeconfig.cache
 C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\CongestionFeeApp\bin\Debug\net5.0\Itenso.TimePeriod.dll
-C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\CongestionFeeApp\obj\Debug\net5.0\CongestionFeeApp.csproj.CopyComplete
