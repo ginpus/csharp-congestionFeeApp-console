@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "ELPRMR7aXsNW9Lv9AkcU9zOLYFulrcqQhMvGWhsSFG3QRLk/NPSyqSX3txHcAH3Rsze6pPxRnB5VkDVeCXhG4Q==",
+  "dgSpecHash": "XOTI/xLZB/CD+N4ERnvuFI8wWWdRvugs4+KPg0AAktG4h/HCKPPgDy5V0qwQeqJ5d8ChD/jvXywuu79c45ulGw==",
   "success": true,
   "projectFilePath": "C:\\Users\\Administrator\\Desktop\\c#\\congestion-fee-calculator-consoleapp\\CongestionFeeApp\\CongestionFeeApp\\CongestionFeeApp.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Administrator\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\5.0.2\\microsoft.extensions.dependencyinjection.5.0.2.nupkg.sha512",
+    "C:\\Users\\Administrator\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\5.0.0\\microsoft.extensions.dependencyinjection.abstractions.5.0.0.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\microsoft.netcore.targets\\1.1.0\\microsoft.netcore.targets.1.1.0.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\microsoft.win32.primitives\\4.3.0\\microsoft.win32.primitives.4.3.0.nupkg.sha512",
@@ -77,8 +79,7 @@
     "C:\\Users\\Administrator\\.nuget\\packages\\system.threading.timer\\4.3.0\\system.threading.timer.4.3.0.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\system.xml.readerwriter\\4.3.0\\system.xml.readerwriter.4.3.0.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512",
-    "C:\\Users\\Administrator\\.nuget\\packages\\timeperiodlibrary.net\\2.1.1\\timeperiodlibrary.net.2.1.1.nupkg.sha512",
-    "C:\\Users\\Administrator\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\5.0.9\\microsoft.netcore.app.host.win-x64.5.0.9.nupkg.sha512"
+    "C:\\Users\\Administrator\\.nuget\\packages\\timeperiodlibrary.net\\2.1.1\\timeperiodlibrary.net.2.1.1.nupkg.sha512"
   ],
   "logs": []
 }

@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "iSR6IzHdHkMWbMQZdEHMKoigE64xT8Ak9Nau1q0KBQKs1uA2zfUPfZzFaSvLyTC0gl19G8gwo2w5bJp1Ly9VvA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Administrator\\Desktop\\c#\\congestion-fee-calculator-consoleapp\\CongestionFeeApp\\Domain\\Domain.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Administrator\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\5.0.2\\microsoft.extensions.dependencyinjection.5.0.2.nupkg.sha512",
+    "C:\\Users\\Administrator\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\5.0.0\\microsoft.extensions.dependencyinjection.abstractions.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

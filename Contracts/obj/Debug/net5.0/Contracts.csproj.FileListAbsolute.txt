@@ -1,0 +1,12 @@
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Contracts\bin\Debug\net5.0\Contracts.deps.json
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Contracts\bin\Debug\net5.0\Contracts.dll
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Contracts\bin\Debug\net5.0\ref\Contracts.dll
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Contracts\bin\Debug\net5.0\Contracts.pdb
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Contracts\obj\Debug\net5.0\Contracts.csproj.AssemblyReference.cache
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Contracts\obj\Debug\net5.0\Contracts.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Contracts\obj\Debug\net5.0\Contracts.AssemblyInfoInputs.cache
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Contracts\obj\Debug\net5.0\Contracts.AssemblyInfo.cs
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Contracts\obj\Debug\net5.0\Contracts.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Contracts\obj\Debug\net5.0\Contracts.dll
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Contracts\obj\Debug\net5.0\ref\Contracts.dll
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Contracts\obj\Debug\net5.0\Contracts.pdb

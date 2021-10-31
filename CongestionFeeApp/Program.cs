@@ -1,17 +1,22 @@
-﻿using CongestionFeeApp.Contracts.Enums;
-using CongestionFeeApp.Models;
+﻿using Microsoft.Extensions.DependencyInjection;
+
 //using Itenso.TimePeriod;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace CongestionFeeApp
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            var range = new TimeRangeCust
+            var startup = new Startup();
+
+            var serviceProvider = startup.ConfigureServices();
+
+            var receipeApp = serviceProvider.GetService<CongestionFeeApp>();
+
+            receipeApp.Start();
+
+            /*var range = new TimeRangeCust
             {
                 //StartTime = Ceiling(new DateTime (2021, 10, 21, 07, 37, 57), TimeSpan.FromSeconds(60)),
                 //EndTime = Floor(new DateTime(2021, 10, 21, 13, 37, 57), TimeSpan.FromSeconds(60))
@@ -33,8 +38,8 @@ namespace CongestionFeeApp
                 // Charge for 2h 0m(PM rate): £2.00
                 // Total Charge: £2.00
 
-                /*                Start = new DateTime(2008, 4, 24, 17, 0, 0),
-                                End = new DateTime(2008, 4, 24, 22, 11, 0)*/
+                *//*                Start = new DateTime(2008, 4, 24, 17, 0, 0),
+                                End = new DateTime(2008, 4, 24, 22, 11, 0)*//*
 
                 //INPUT 3
                 //Van: 25 / 04 / 2008 10:23 - 28 / 04 / 2008 09:02
@@ -43,8 +48,8 @@ namespace CongestionFeeApp
                 //Charge for 7h 0m(PM rate): £17.50
                 //Total Charge: £24.80
 
-                /*                Start = new DateTime(2008, 4, 25, 10, 23, 0),
-                                End = new DateTime(2008, 4, 28, 9, 2, 0)*/
+                *//*                Start = new DateTime(2008, 4, 25, 10, 23, 0),
+                                End = new DateTime(2008, 4, 28, 9, 2, 0)*//*
             };
 
             if(range.Start > range.End)
@@ -62,9 +67,8 @@ namespace CongestionFeeApp
 
             var chargeThresholds = new List<TimeSpan> {
                 amStart,
-                pmStart,  
+                pmStart,
                 pmEnd};
-
 
             //Charge days splitter
 
@@ -83,9 +87,9 @@ namespace CongestionFeeApp
 
             for (var i = 0; i < chargeDays.Count; i++)
             {
-                for (var j = 0; j< chargeThresholds.Count; j++) 
-                { 
-                    chargeDays[i].Thresholds.Add(chargeThresholds[j]);    
+                for (var j = 0; j< chargeThresholds.Count; j++)
+                {
+                    chargeDays[i].Thresholds.Add(chargeThresholds[j]);
                 }
                 if (i == 0)
                 {
@@ -125,8 +129,6 @@ namespace CongestionFeeApp
                 Console.WriteLine($"Charge for {Math.Floor(totalDuration[k].TotalHours)}h {totalDuration[k].Minutes}m (rate {k+1})");
             }
 
-
-
          //METHOD 2. Also works, but is stiff
 
             var amChargeDuration = new List<TimeSpan> { };
@@ -136,7 +138,7 @@ namespace CongestionFeeApp
             {
                 Console.WriteLine(chargeDays[i]);
 
-                if (chargeDays[i].StartTime.TimeOfDay <= amStart  && 
+                if (chargeDays[i].StartTime.TimeOfDay <= amStart  &&
                     chargeDays[i].EndTime.TimeOfDay >= pmEnd)
                 {
                     Console.WriteLine("S0; P3");
@@ -255,7 +257,7 @@ namespace CongestionFeeApp
         private static bool IsChargeableDay(int dayOfWeek)
         {
            return Enum.IsDefined(typeof(ChargeableDays), dayOfWeek);
+        }*/
         }
     }
-
 }

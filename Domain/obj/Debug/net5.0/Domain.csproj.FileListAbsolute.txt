@@ -1,0 +1,17 @@
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Domain\obj\Debug\net5.0\Domain.csproj.AssemblyReference.cache
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Domain\obj\Debug\net5.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Domain\obj\Debug\net5.0\Domain.AssemblyInfoInputs.cache
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Domain\obj\Debug\net5.0\Domain.AssemblyInfo.cs
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Domain\obj\Debug\net5.0\Domain.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Domain\bin\Debug\net5.0\Domain.deps.json
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Domain\bin\Debug\net5.0\Domain.dll
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Domain\bin\Debug\net5.0\ref\Domain.dll
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Domain\bin\Debug\net5.0\Domain.pdb
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Domain\bin\Debug\net5.0\Contracts.dll
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Domain\bin\Debug\net5.0\Persistence.dll
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Domain\bin\Debug\net5.0\Contracts.pdb
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Domain\bin\Debug\net5.0\Persistence.pdb
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Domain\obj\Debug\net5.0\Domain.csproj.CopyComplete
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Domain\obj\Debug\net5.0\Domain.dll
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Domain\obj\Debug\net5.0\ref\Domain.dll
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Domain\obj\Debug\net5.0\Domain.pdb

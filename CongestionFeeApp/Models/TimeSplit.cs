@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CongestionFeeApp.Models
 {
@@ -14,7 +11,7 @@ namespace CongestionFeeApp.Models
 
         public DayOfWeek WeekDay { get; set; }
 
-        public List<TimeSpan> Thresholds {  get; set; }
+        public List<TimeSpan> Thresholds { get; set; }
 
         public override string ToString()
         {
