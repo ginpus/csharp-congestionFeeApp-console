@@ -9,7 +9,5 @@ namespace CongestionFeeApp.Models
     public class TimeSpanCust
     {
         public TimeSpan TimeStamp {  get; set; }
-
-        public string Type {  get; set; }
     }
 }

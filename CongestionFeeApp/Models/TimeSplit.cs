@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CongestionFeeApp.Models
 {
-    public class TimeSplitCust
+    public class TimeSplit
     {
         public DateTime StartTime { get; set; }
 

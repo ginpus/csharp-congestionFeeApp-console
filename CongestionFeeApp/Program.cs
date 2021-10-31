@@ -23,28 +23,28 @@ namespace CongestionFeeApp
                 //Charge for 2h 42m(PM rate): £6.70
                 //Total Charge: £7.60
 
-                /*StartTime = new DateTime(2008, 4, 24, 11, 32, 0),
-                EndTime = new DateTime(2008, 4, 24, 14, 42, 0)*/
+                Start = new DateTime(2008, 4, 24, 11, 32, 0),
+                End = new DateTime(2008, 4, 24, 14, 42, 0)
 
                 //INPUT 2
                 //Motorbike: 24 / 04 / 2008 17:00 - 24 / 04 / 2008 22:11
                 //OUTPUT 2
-               // Charge for 0h 0m(AM rate): £0.00
-               // Charge for 2h 0m(PM rate): £2.00
-               // Total Charge: £2.00
+                // Charge for 0h 0m(AM rate): £0.00
+                // Charge for 2h 0m(PM rate): £2.00
+                // Total Charge: £2.00
 
-                /*StartTime = new DateTime(2008, 4, 24, 17, 0, 0),
-                EndTime = new DateTime(2008, 4, 24, 22, 11, 0)*/
+                /*                Start = new DateTime(2008, 4, 24, 17, 0, 0),
+                                End = new DateTime(2008, 4, 24, 22, 11, 0)*/
 
                 //INPUT 3
                 //Van: 25 / 04 / 2008 10:23 - 28 / 04 / 2008 09:02
                 //OUTPUT 3
                 //Charge for 3h 39m(AM rate): £7.30
                 //Charge for 7h 0m(PM rate): £17.50
-               //Total Charge: £24.80
+                //Total Charge: £24.80
 
-                Start = new DateTime(2008, 4, 25, 10, 23, 0),
-                End = new DateTime(2008, 4, 30, 11, 2, 0)
+                /*                Start = new DateTime(2008, 4, 25, 10, 23, 0),
+                                End = new DateTime(2008, 4, 28, 9, 2, 0)*/
             };
 
             if(range.Start > range.End)
@@ -66,8 +66,10 @@ namespace CongestionFeeApp
                 pmEnd};
 
 
+            //Charge days splitter
+
             var chargeDays = Enumerable.Range(0, (range.End.Date - range.Start.Date).Days + 1)
-                  .Select(d => new TimeSplitCust
+                  .Select(d => new TimeSplit
                   {
                       StartTime = Max(range.Start.Date.AddDays(d), range.Start),
                       EndTime = Min(range.Start.Date.AddDays(d + 1).AddMilliseconds(-1), range.End),
@@ -83,7 +85,7 @@ namespace CongestionFeeApp
             {
                 for (var j = 0; j< chargeThresholds.Count; j++) 
                 { 
-                    chargeDays[i].Thresholds.Add(chargeThresholds[j]);
+                    chargeDays[i].Thresholds.Add(chargeThresholds[j]);    
                 }
                 if (i == 0)
                 {
@@ -101,7 +103,32 @@ namespace CongestionFeeApp
                     .OrderBy(t => t.TotalMinutes).ToList();
             }
 
-            
+            var splitDuration = new List<List<TimeSpan>>();
+            var totalDuration = new List<TimeSpan>();
+
+            for (var k = 0; k < chargeThresholds.Count - 1; k++)
+            {
+                splitDuration.Add(new List<TimeSpan>());
+                for (var i = 0; i < chargeDays.Count; i++)
+                {
+                        for (var l = 0; l < chargeDays[i].Thresholds.Count - 1; l++)
+                        {
+                            if (chargeDays[i].Thresholds[l].TotalMinutes >= chargeThresholds[k].TotalMinutes &&
+                               chargeDays[i].Thresholds[l].TotalMinutes < chargeThresholds[k + 1].TotalMinutes)
+                            {
+                                var chargeSplitDuration = chargeDays[i].Thresholds[l + 1] - chargeDays[i].Thresholds[l];
+                            splitDuration[k].Add(chargeSplitDuration);
+                            }
+                        }
+                }
+                totalDuration.Add(new TimeSpan(splitDuration[k].Sum(r => r.Ticks)));
+                Console.WriteLine($"Charge for {Math.Floor(totalDuration[k].TotalHours)}h {totalDuration[k].Minutes}m (rate {k+1})");
+            }
+
+
+
+         //METHOD 2. Also works, but is stiff
+
             var amChargeDuration = new List<TimeSpan> { };
             var pmChargeDuration = new List<TimeSpan> { };
 
@@ -195,6 +222,8 @@ namespace CongestionFeeApp
                 Console.WriteLine($"Charge for {Math.Floor(totalAmSpan.TotalHours)}h {totalAmSpan.Minutes}m (AM rate)");
                 Console.WriteLine($"Charge for {Math.Floor(totalPmSpan.TotalHours)}h {totalPmSpan.Minutes}m (PM rate)");
             }
+
+            Console.WriteLine("end");
         }
 
         public static DateTime Floor(DateTime dateTime, TimeSpan interval)
