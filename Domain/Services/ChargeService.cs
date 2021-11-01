@@ -26,7 +26,7 @@ namespace Domain.Services
             }
         }
         
-        public List<TimeSplit> SplitChargableDays(TimeRange range)
+        public Dictionary<string, double> CalculateChargePeriods(TimeRange range)
         {
             if (range.Start > range.End)
             {
@@ -70,6 +70,7 @@ namespace Domain.Services
 
             var splitDuration = new List<List<TimeSpan>>();
             var totalDuration = new List<TimeSpan>();
+            var durationsList = new Dictionary<string, double>();
 
             for (var k = 0; k < chargeThresholds.Count - 1; k++)
             {
@@ -87,10 +88,26 @@ namespace Domain.Services
                     }
                 }
                 totalDuration.Add(new TimeSpan(splitDuration[k].Sum(r => r.Ticks)));
-                Console.WriteLine($"Charge for {Math.Floor(totalDuration[k].TotalHours)}h {totalDuration[k].Minutes}m (rate {k + 1})");
+                var totalHours = Math.Floor(totalDuration[k].TotalHours);
+                var minutes = totalDuration[k].Minutes;
+                Console.WriteLine($"Charge for {totalHours}h {minutes}m (rate {k + 1})");
+
+                durationsList.Add($"rate {k + 1}", totalDuration[k].TotalMinutes);
             }
 
-            return chargeDays;
+            return durationsList;
+        }
+
+        public List<double> CalculateCharges(Dictionary<string, double> totalDurations, VehicleTypes type)
+        {
+            var results = new List<double>();
+            var multiplier = _chargeRepository.GetRates(type);
+            foreach(var entry in totalDurations)
+            {
+                var sum = multiplier * entry.Value / 60;
+                results.Add(sum);
+            }
+            return results;
         }
 
         public void PrintVechicleTypes()

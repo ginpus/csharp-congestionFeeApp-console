@@ -2,6 +2,7 @@
 using Domain.Models;
 using Domain.Services;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CongestionFeeApp
@@ -23,6 +24,7 @@ namespace CongestionFeeApp
             DateTime startTime;
             DateTime endTime;
             TimeRange timeRange = new TimeRange { };
+            Dictionary<string, double> totalDurations;
 
             //can be deleted. for printing only
             _chargeService.GetDefaultChargeValues();
@@ -49,17 +51,17 @@ namespace CongestionFeeApp
                             case "1":
                                 timeRange.Start = new DateTime(2008, 4, 24, 11, 32, 0);
                                 timeRange.End = new DateTime(2008, 4, 24, 14, 42, 0);
-                                _chargeService.SplitChargableDays(timeRange);
+                                _chargeService.CalculateChargePeriods(timeRange);
                                 break;
                             case "2":
                                 timeRange.Start = new DateTime(2008, 4, 24, 17, 0, 0);
                                 timeRange.End = new DateTime(2008, 4, 24, 22, 11, 0);
-                                _chargeService.SplitChargableDays(timeRange);
+                                _chargeService.CalculateChargePeriods(timeRange);
                                 break;
                             case "3":
                                 timeRange.Start = new DateTime(2008, 4, 25, 10, 23, 0);
                                 timeRange.End = new DateTime(2008, 4, 28, 9, 2, 0);
-                                _chargeService.SplitChargableDays(timeRange);
+                                _chargeService.CalculateChargePeriods(timeRange);
                                 break;
                             case "9":
                                 break;
@@ -95,7 +97,13 @@ namespace CongestionFeeApp
                         timeRange.Start = startTime;
                         timeRange.End = endTime;
 
-                        _chargeService.SplitChargableDays(timeRange);
+                        totalDurations = _chargeService.CalculateChargePeriods(timeRange);
+                        var totalCharges = _chargeService.CalculateCharges(totalDurations, type);
+                        foreach(var entry in totalCharges)
+                        {
+                            Console.WriteLine(entry);
+                        }
+
                         Console.WriteLine("-----------------------------");
                         break;
 

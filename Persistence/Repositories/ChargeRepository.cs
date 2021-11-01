@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Contracts.Enums;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -37,6 +38,8 @@ namespace Persistence.Repositories
 
             _chargeThresholds = chargeThresholds;
             _charges = charges;
+
+
         }
 
         public void ImportRanges()
@@ -47,6 +50,11 @@ namespace Persistence.Repositories
                 var entry = JsonSerializer.Deserialize<Range>(line);
                 _ranges.Add(entry);
             }
+        }
+
+        public double GetRates(VehicleTypes type)
+        {
+            return _charges[0];
         }
 
 /*        public void InsertNote()
