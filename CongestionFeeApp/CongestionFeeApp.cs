@@ -1,4 +1,5 @@
 ﻿using Contracts.Enums;
+using Contracts.Models;
 using Domain.Models;
 using Domain.Services;
 using System;
@@ -33,7 +34,8 @@ namespace CongestionFeeApp
             {
                 Console.WriteLine("Available commands:");
                 Console.WriteLine("1 - Demo Congestion Fee Calculation");
-                Console.WriteLine("2 - Calculate Congestion Fee");;
+                Console.WriteLine("2 - Calculate Congestion Fee");
+                Console.WriteLine("3 - Create new range");
                 Console.WriteLine("9 - Exit");
 
                 var chosenCommand = Console.ReadLine();
@@ -106,7 +108,30 @@ namespace CongestionFeeApp
 
                         Console.WriteLine("-----------------------------");
                         break;
-
+                    case "3":
+                        Console.WriteLine("Enter the name for a new range: ");
+                        string alias = Console.ReadLine();
+                        Console.WriteLine("Enter start time hours: ");
+                        TimeSpan startHours = TimeSpan.FromHours(Convert.ToInt32(Console.ReadLine()));
+                        Console.WriteLine("Enter end time hours: ");
+                        TimeSpan endHours = TimeSpan.FromHours(Convert.ToInt32(Console.ReadLine()));
+                        Array values = Enum.GetValues(typeof(VehicleTypes));
+                        var fees = new Dictionary<VehicleTypes, double>();
+                        foreach (VehicleTypes value in values)
+                        {
+                            Console.WriteLine($"Enter the fee for {value}: ");
+                            double charge = Convert.ToDouble(Console.ReadLine());
+                            fees.Add(value, charge);
+                        }
+                        var newRange = new ChargeRange
+                        {
+                            Id = Guid.NewGuid(),
+                            Alias = alias,
+                            Start = startHours,
+                            End = endHours,
+                            FeeList = fees
+                        };
+                        break;
                     case "9":
                         Console.WriteLine("The program ended");
                         return Task.CompletedTask;

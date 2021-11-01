@@ -1,7 +1,9 @@
 ﻿using Contracts.Enums;
+using Persistence.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 
 namespace Persistence.Repositories
@@ -11,11 +13,11 @@ namespace Persistence.Repositories
         private readonly List<TimeSpan> _chargeThresholds = new List<TimeSpan>();
         private readonly List<double> _charges = new List<double>();
 
-        private List<Range> _ranges { get; set; }
+        private List<ChargeRange2> _ranges { get; set; }
 
         protected string _fileName = "ranges_json.txt";
 
-        public Range _newRange { get; set; }
+        public ChargeRange2 _newRange { get; set; }
 
         public string[] _savedRanges { get; set; }
 
@@ -36,9 +38,27 @@ namespace Persistence.Repositories
 
             var charges = new List<double> { 2.00, 2.50 };
 
+            _ranges = new List<ChargeRange2>();
+
+            for(var i=0; i< chargeThresholds.Count -1; i++)
+            {
+                _newRange = new ChargeRange2
+                {
+                    Id = Guid.NewGuid(),
+                    Alias = $"{i + 1} range",
+                    Start = chargeThresholds[i],
+                    End = chargeThresholds[i+1],
+                    FeeList = new Dictionary<VehicleTypes, double>()
+                };
+                foreach(VehicleTypes value in (Array)Enum.GetValues(typeof(VehicleTypes)))
+                {
+                    _newRange.FeeList.Add(value, 2.22);
+                }
+                _ranges.Add(_newRange);
+            }
+
             _chargeThresholds = chargeThresholds;
             _charges = charges;
-
 
         }
 
@@ -47,13 +67,23 @@ namespace Persistence.Repositories
             _savedRanges = File.ReadAllLines(_fileName);
             foreach (var line in _savedRanges)
             {
-                var entry = JsonSerializer.Deserialize<Range>(line);
+                var entry = JsonSerializer.Deserialize<ChargeRange2>(line);
                 _ranges.Add(entry);
             }
         }
 
         public double GetRates(VehicleTypes type)
         {
+/*            var ex = new TimeSpan(0, 0, 0);
+            _ranges
+                .Where(d => d.Start.TotalMinutes <= ex.TotalMinutes &&
+            d.End.TotalMinutes > ex.TotalMinutes)
+                .Where(b => b.FeeList.Keys.SingleOrDefault(type));
+            
+            foreach(var value in _ranges)
+            {
+
+            }*/
             return _charges[0];
         }
 
