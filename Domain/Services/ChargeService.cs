@@ -16,6 +16,16 @@ namespace Domain.Services
             _chargeRepository = chargeRepository;
         }
 
+        public void GetDefaultChargeValues()
+        {
+            var chargeThresholds = _chargeRepository.GetChargeThresholds();
+
+            foreach (var chargeThreshold in chargeThresholds)
+            {
+                Console.WriteLine(chargeThreshold);
+            }
+        }
+        
         public List<TimeSplit> SplitChargableDays(TimeRange range)
         {
             if (range.Start > range.End)
@@ -81,6 +91,15 @@ namespace Domain.Services
             }
 
             return chargeDays;
+        }
+
+        public void PrintVechicleTypes()
+        {
+            var count = 0;
+            foreach (var name in Enum.GetNames(typeof(VehicleTypes)))
+            {
+                Console.WriteLine($"{++count} - {name}");
+            }
         }
 
         private static DateTime Min(DateTime a, DateTime b)

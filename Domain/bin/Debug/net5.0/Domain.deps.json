@@ -42,6 +42,7 @@
       },
       "Persistence/1.0.0": {
         "dependencies": {
+          "Contracts": "1.0.0",
           "Microsoft.Extensions.DependencyInjection": "5.0.2"
         },
         "runtime": {

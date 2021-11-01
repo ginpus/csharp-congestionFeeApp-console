@@ -22,6 +22,16 @@
         "runtime": {
           "lib/netstandard2.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {}
         }
+      },
+      "Contracts/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v5.0",
+        "compile": {
+          "bin/placeholder/Contracts.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Contracts.dll": {}
+        }
       }
     }
   },
@@ -69,10 +79,16 @@
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
+    },
+    "Contracts/1.0.0": {
+      "type": "project",
+      "path": "../Contracts/Contracts.csproj",
+      "msbuildProject": "../Contracts/Contracts.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net5.0": [
+      "Contracts >= 1.0.0",
       "Microsoft.Extensions.DependencyInjection >= 5.0.2"
     ]
   },
@@ -102,7 +118,11 @@
       "frameworks": {
         "net5.0": {
           "targetAlias": "net5.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\Administrator\\Desktop\\c#\\congestion-fee-calculator-consoleapp\\CongestionFeeApp\\Contracts\\Contracts.csproj": {
+              "projectPath": "C:\\Users\\Administrator\\Desktop\\c#\\congestion-fee-calculator-consoleapp\\CongestionFeeApp\\Contracts\\Contracts.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

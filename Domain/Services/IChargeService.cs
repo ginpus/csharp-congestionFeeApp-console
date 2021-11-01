@@ -6,5 +6,9 @@ namespace Domain.Services
     public interface IChargeService
     {
         List<TimeSplit> SplitChargableDays(TimeRange range);
+
+        void GetDefaultChargeValues();
+
+        void PrintVechicleTypes();
     }
 }

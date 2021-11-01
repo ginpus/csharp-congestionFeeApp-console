@@ -8,6 +8,7 @@
     ".NETCoreApp,Version=v5.0": {
       "Persistence/1.0.0": {
         "dependencies": {
+          "Contracts": "1.0.0",
           "Microsoft.Extensions.DependencyInjection": "5.0.2"
         },
         "runtime": {
@@ -32,6 +33,11 @@
             "fileVersion": "5.0.20.51904"
           }
         }
+      },
+      "Contracts/1.0.0": {
+        "runtime": {
+          "Contracts.dll": {}
+        }
       }
     }
   },
@@ -54,6 +60,11 @@
       "sha512": "sha512-ORj7Zh81gC69TyvmcUm9tSzytcy8AVousi+IVRAI8nLieQjOFryRusSFh7+aLk16FN9pQNqJAiMd7BTKINK0kA==",
       "path": "microsoft.extensions.dependencyinjection.abstractions/5.0.0",
       "hashPath": "microsoft.extensions.dependencyinjection.abstractions.5.0.0.nupkg.sha512"
+    },
+    "Contracts/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     }
   }
 }

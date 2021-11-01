@@ -10,3 +10,6 @@ C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\Congestio
 C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Persistence\obj\Debug\net5.0\Persistence.dll
 C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Persistence\obj\Debug\net5.0\ref\Persistence.dll
 C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Persistence\obj\Debug\net5.0\Persistence.pdb
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Persistence\bin\Debug\net5.0\Contracts.dll
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Persistence\bin\Debug\net5.0\Contracts.pdb
+C:\Users\Administrator\Desktop\c#\congestion-fee-calculator-consoleapp\CongestionFeeApp\Persistence\obj\Debug\net5.0\Persistence.csproj.CopyComplete
