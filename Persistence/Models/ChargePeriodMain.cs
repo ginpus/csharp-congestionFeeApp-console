@@ -1,9 +1,6 @@
 ﻿using Contracts.Enums;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Persistence.Models
 {
@@ -15,5 +12,5 @@ namespace Persistence.Models
         public TimeSpan End { get; set; }
         public Dictionary<VehicleTypes, double> FeeList { get; set; }
         public TimeSpan TotalDuration { get; set; }
-    }   
+    }
 }

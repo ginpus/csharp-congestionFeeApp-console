@@ -18,7 +18,7 @@ namespace Domain.Services
         {
             _chargeRepository = chargeRepository;
         }
-        
+
         public List<ChargePeriod> CalculateChargePeriods(TimeRange range)
         {
             if (range.Start > range.End)
@@ -92,13 +92,12 @@ namespace Domain.Services
 
         public List<PeriodTotalCharge> CalculateCharges(List<ChargePeriod> totalDurations, VehicleTypes type)
         {
-
             var results = new List<PeriodTotalCharge>();
             foreach (var chargePeriod in totalDurations)
             {
-                var rate = _chargeRepository.GetRates(chargePeriod.Start ,type);
+                var rate = _chargeRepository.GetRates(chargePeriod.Start, type);
                 var duration = chargePeriod.TotalDuration.TotalMinutes;
-                var sum = Math.Floor((rate * duration / 60)*10)/10;
+                var sum = Math.Floor((rate * duration / 60) * 10) / 10;
                 results.Add(new PeriodTotalCharge
                 {
                     Alias = chargePeriod.Alias,
@@ -106,7 +105,7 @@ namespace Domain.Services
                     TotalCharge = sum
                 });
             }
-            
+
             return results;
         }
 

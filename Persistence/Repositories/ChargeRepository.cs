@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Persistence.Repositories
 {
@@ -26,9 +25,9 @@ namespace Persistence.Repositories
             {
                 Id = Guid.NewGuid(),
                 Alias = "AM rate",
-                Start = new TimeSpan(7,0,0),
+                Start = new TimeSpan(7, 0, 0),
                 End = new TimeSpan(12, 0, 0),
-                FeeList = new Dictionary<VehicleTypes, double> ()
+                FeeList = new Dictionary<VehicleTypes, double>()
             };
 
             amPeriod.FeeList.Add(VehicleTypes.Car, 2.00);
@@ -44,15 +43,15 @@ namespace Persistence.Repositories
                 End = new TimeSpan(19, 0, 0),
                 FeeList = new Dictionary<VehicleTypes, double>()
             };
-            
+
             pmPeriod.FeeList.Add(VehicleTypes.Car, 2.50);
             pmPeriod.FeeList.Add(VehicleTypes.Motorbike, 1.00);
 
             _periods.Add(pmPeriod);
 
-            var allPeriodThresholds = new List<TimeSpan> {};
-            
-            foreach(var range in _periods)
+            var allPeriodThresholds = new List<TimeSpan> { };
+
+            foreach (var range in _periods)
             {
                 allPeriodThresholds.Add(range.Start);
                 allPeriodThresholds.Add(range.End);
@@ -70,9 +69,9 @@ namespace Persistence.Repositories
         {
             double rate;
 
-           _periods
-                .FirstOrDefault(d => d.Start == startOfPeriod)
-                .FeeList.TryGetValue(type, out rate);
+            _periods
+                 .FirstOrDefault(d => d.Start == startOfPeriod)
+                 .FeeList.TryGetValue(type, out rate);
 
             return rate;
         }
