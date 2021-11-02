@@ -34,7 +34,6 @@ namespace CongestionFeeApp
             {
                 Console.WriteLine("Available commands:");
                 Console.WriteLine("1 - Calculate Congestion Fee");
-                Console.WriteLine("2 - Create new range");
                 Console.WriteLine("8 - Demo Congestion Fee Calculation");
                 Console.WriteLine("9 - Exit");
 
@@ -80,37 +79,11 @@ namespace CongestionFeeApp
                         Console.WriteLine("-----------------------------");
                         break;
 
-                    case "2":
-                        Console.WriteLine("Enter the name for a new range: ");
-                        string alias = Console.ReadLine();
-                        Console.WriteLine("Enter start time hours: ");
-                        TimeSpan startHours = TimeSpan.FromHours(Convert.ToInt32(Console.ReadLine()));
-                        Console.WriteLine("Enter end time hours: ");
-                        TimeSpan endHours = TimeSpan.FromHours(Convert.ToInt32(Console.ReadLine()));
-                        Array values = Enum.GetValues(typeof(VehicleTypes));
-                        var fees = new Dictionary<VehicleTypes, double>();
-                        foreach (VehicleTypes value in values)
-                        {
-                            Console.WriteLine($"Enter the fee for {value}: ");
-                            double charge = Convert.ToDouble(Console.ReadLine());
-                            fees.Add(value, charge);
-                        }
-                        var newRange = new ChargePeriod
-                        {
-                            Id = Guid.NewGuid(),
-                            Alias = alias,
-                            Start = startHours,
-                            End = endHours,
-                            FeeList = fees
-                        };
-                        Console.WriteLine("-----------------------------");
-                        break;
-
                     case "8":
                         demoMode = true;
                         while (demoMode)
                         {
-                            Console.WriteLine("Available demos:");
+                            Console.WriteLine("\nAvailable demos:");
                             Console.WriteLine("1 - Car: 24/04/2008 11:32 - 24/04/2008 14:42");
                             Console.WriteLine("2 - Motorbike: 24/04/2008 17:00 - 24/04/2008 22:11"); ;
                             Console.WriteLine("3 - Van: 25/04/2008 10:23 - 28/04/2008 09:02");

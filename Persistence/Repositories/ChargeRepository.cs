@@ -13,8 +13,6 @@ namespace Persistence.Repositories
         private readonly List<TimeSpan> _periodThresholds = new List<TimeSpan>();
         private readonly List<ChargePeriodMain> _periods = new List<ChargePeriodMain>();
 
-        protected string _fileName = "ranges_json.txt";
-
         public ChargePeriodMain _newPeriod { get; set; }
 
         public string[] _savedPeriods { get; set; }
@@ -84,16 +82,6 @@ namespace Persistence.Repositories
         public List<ChargePeriodMain> GetChargeRanges()
         {
             return _periods;
-        }
-
-        public void ImportRanges()
-        {
-            _savedPeriods = File.ReadAllLines(_fileName);
-            foreach (var line in _savedPeriods)
-            {
-                var period = JsonSerializer.Deserialize<ChargePeriodMain>(line);
-                _periods.Add(period);
-            }
         }
     }
 }
