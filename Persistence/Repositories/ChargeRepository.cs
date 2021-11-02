@@ -124,7 +124,7 @@ namespace Persistence.Repositories
                     //Console.Write($"-> New note inserted: \n{_newNote.ToString()}\n{newJsonNote}");
                 }*/
 
-        public List<TimeSpan> GetChargeThresholds()
+        public List<TimeSpan> GetPeriodThresholds()
         {
             return _chargeThresholds;
         }

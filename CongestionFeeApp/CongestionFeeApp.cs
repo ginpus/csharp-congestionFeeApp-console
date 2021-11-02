@@ -26,22 +26,82 @@ namespace CongestionFeeApp
             DateTime endTime;
             TimeRange timeRange = new TimeRange { };
             Dictionary<TimeSpan, double> totalDurations;
-
-            //can be deleted. for printing only
-            _chargeService.GetDefaultChargeValues();
+            List<double> totalCharges;
 
             while (true)
             {
                 Console.WriteLine("Available commands:");
-                Console.WriteLine("1 - Demo Congestion Fee Calculation");
-                Console.WriteLine("2 - Calculate Congestion Fee");
-                Console.WriteLine("3 - Create new range");
+                Console.WriteLine("1 - Calculate Congestion Fee");
+                Console.WriteLine("2 - Create new range");
+                Console.WriteLine("8 - Demo Congestion Fee Calculation");
                 Console.WriteLine("9 - Exit");
 
                 var chosenCommand = Console.ReadLine();
                 switch (chosenCommand)
                 {
                     case "1":
+                        Console.WriteLine("Enter vechicle type: ");
+                        _chargeService.PrintVechicleTypes();
+                        type = (VehicleTypes)Convert.ToInt32(Console.ReadLine());
+
+                        Console.WriteLine("Enter start time in `dd/MM/yyyy HH:mm` format (no ticks): ");
+                        start = Console.ReadLine();
+                        while (!DateTime.TryParseExact(start, "dd/MM/yyyy HH:mm", null, System.Globalization.DateTimeStyles.None, out startTime))
+                        {
+                            Console.WriteLine("Invalid date/time, please retry");
+                            start = Console.ReadLine();
+                        }
+
+                        Console.WriteLine("Enter end time in `dd/MM/yyyy HH:mm` format (no ticks): ");
+                        end = Console.ReadLine();
+                        while (!DateTime.TryParseExact(end, "dd/MM/yyyy HH:mm", null, System.Globalization.DateTimeStyles.None, out endTime) || endTime < startTime)
+                        {
+                            Console.WriteLine("Invalid date/time, please retry");
+                            if (endTime < startTime)
+                            {
+                                Console.WriteLine("End time cannot be before start time");
+                            }
+                            end = Console.ReadLine();
+                        }
+
+                        timeRange.Start = startTime;
+                        timeRange.End = endTime;
+
+                        totalDurations = _chargeService.CalculateChargePeriods(timeRange);
+                        totalCharges = _chargeService.CalculateCharges(totalDurations, type);
+                        foreach(var entry in totalCharges)
+                        {
+                            Console.WriteLine(entry);
+                        }
+
+                        Console.WriteLine("-----------------------------");
+                        break;
+                    case "2":
+                        Console.WriteLine("Enter the name for a new range: ");
+                        string alias = Console.ReadLine();
+                        Console.WriteLine("Enter start time hours: ");
+                        TimeSpan startHours = TimeSpan.FromHours(Convert.ToInt32(Console.ReadLine()));
+                        Console.WriteLine("Enter end time hours: ");
+                        TimeSpan endHours = TimeSpan.FromHours(Convert.ToInt32(Console.ReadLine()));
+                        Array values = Enum.GetValues(typeof(VehicleTypes));
+                        var fees = new Dictionary<VehicleTypes, double>();
+                        foreach (VehicleTypes value in values)
+                        {
+                            Console.WriteLine($"Enter the fee for {value}: ");
+                            double charge = Convert.ToDouble(Console.ReadLine());
+                            fees.Add(value, charge);
+                        }
+                        var newRange = new ChargeRange
+                        {
+                            Id = Guid.NewGuid(),
+                            Alias = alias,
+                            Start = startHours,
+                            End = endHours,
+                            FeeList = fees
+                        };
+                        Console.WriteLine("-----------------------------");
+                        break;
+                    case "8":
                         Console.WriteLine("Available demos:");
                         Console.WriteLine("1 - Car: 24/04/2008 11:32 - 24/04/2008 14:42");
                         Console.WriteLine("2 - Motorbike: 24/04/2008 17:00 - 24/04/2008 22:11"); ;
@@ -84,68 +144,6 @@ namespace CongestionFeeApp
                                 break;
                         }
                         Console.WriteLine("-----------------------------");
-                        break;
-                    
-                    case "2":
-                        Console.WriteLine("Enter vechicle type: ");
-                        _chargeService.PrintVechicleTypes();
-                        type = (VehicleTypes)Convert.ToInt32(Console.ReadLine());
-
-                        Console.WriteLine("Enter start time in `dd/MM/yyyy HH:mm` format (no ticks): ");
-                        start = Console.ReadLine();
-                        while (!DateTime.TryParseExact(start, "dd/MM/yyyy HH:mm", null, System.Globalization.DateTimeStyles.None, out startTime))
-                        {
-                            Console.WriteLine("Invalid date/time, please retry");
-                            start = Console.ReadLine();
-                        }
-
-                        Console.WriteLine("Enter end time in `dd/MM/yyyy HH:mm` format (no ticks): ");
-                        end = Console.ReadLine();
-                        while (!DateTime.TryParseExact(end, "dd/MM/yyyy HH:mm", null, System.Globalization.DateTimeStyles.None, out endTime) || endTime < startTime)
-                        {
-                            Console.WriteLine("Invalid date/time, please retry");
-                            if (endTime < startTime)
-                            {
-                                Console.WriteLine("End time cannot be before start time");
-                            }
-                            end = Console.ReadLine();
-                        }
-
-                        timeRange.Start = startTime;
-                        timeRange.End = endTime;
-
-                        totalDurations = _chargeService.CalculateChargePeriods(timeRange);
-                        var totalCharges = _chargeService.CalculateCharges(totalDurations, type);
-                        foreach(var entry in totalCharges)
-                        {
-                            Console.WriteLine(entry);
-                        }
-
-                        Console.WriteLine("-----------------------------");
-                        break;
-                    case "3":
-                        Console.WriteLine("Enter the name for a new range: ");
-                        string alias = Console.ReadLine();
-                        Console.WriteLine("Enter start time hours: ");
-                        TimeSpan startHours = TimeSpan.FromHours(Convert.ToInt32(Console.ReadLine()));
-                        Console.WriteLine("Enter end time hours: ");
-                        TimeSpan endHours = TimeSpan.FromHours(Convert.ToInt32(Console.ReadLine()));
-                        Array values = Enum.GetValues(typeof(VehicleTypes));
-                        var fees = new Dictionary<VehicleTypes, double>();
-                        foreach (VehicleTypes value in values)
-                        {
-                            Console.WriteLine($"Enter the fee for {value}: ");
-                            double charge = Convert.ToDouble(Console.ReadLine());
-                            fees.Add(value, charge);
-                        }
-                        var newRange = new ChargeRange
-                        {
-                            Id = Guid.NewGuid(),
-                            Alias = alias,
-                            Start = startHours,
-                            End = endHours,
-                            FeeList = fees
-                        };
                         break;
                     case "9":
                         Console.WriteLine("The program ended");

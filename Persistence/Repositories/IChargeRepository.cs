@@ -7,7 +7,7 @@ namespace Persistence.Repositories
 {
     public interface IChargeRepository
     {
-        List<TimeSpan> GetChargeThresholds();
+        List<TimeSpan> GetPeriodThresholds();
 
         double GetRates(TimeSpan startOfRange, VehicleTypes type);
 
