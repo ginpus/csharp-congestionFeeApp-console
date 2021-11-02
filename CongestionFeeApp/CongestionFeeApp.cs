@@ -25,7 +25,7 @@ namespace CongestionFeeApp
             DateTime startTime;
             DateTime endTime;
             TimeRange timeRange = new TimeRange { };
-            Dictionary<string, double> totalDurations;
+            Dictionary<TimeSpan, double> totalDurations;
 
             //can be deleted. for printing only
             _chargeService.GetDefaultChargeValues();
@@ -53,17 +53,32 @@ namespace CongestionFeeApp
                             case "1":
                                 timeRange.Start = new DateTime(2008, 4, 24, 11, 32, 0);
                                 timeRange.End = new DateTime(2008, 4, 24, 14, 42, 0);
-                                _chargeService.CalculateChargePeriods(timeRange);
+                                var totalDurationsDemo1 = _chargeService.CalculateChargePeriods(timeRange);
+                                var totalChargesDemo1 = _chargeService.CalculateCharges(totalDurationsDemo1, VehicleTypes.Car);
+                                foreach (var entry in totalChargesDemo1)
+                                {
+                                    Console.WriteLine(entry);
+                                }
                                 break;
                             case "2":
                                 timeRange.Start = new DateTime(2008, 4, 24, 17, 0, 0);
                                 timeRange.End = new DateTime(2008, 4, 24, 22, 11, 0);
-                                _chargeService.CalculateChargePeriods(timeRange);
+                                var totalDurationsDemo2 = _chargeService.CalculateChargePeriods(timeRange);
+                                var totalChargesDemo2 = _chargeService.CalculateCharges(totalDurationsDemo2, VehicleTypes.Motorbike);
+                                foreach (var entry in totalChargesDemo2)
+                                {
+                                    Console.WriteLine(entry);
+                                }
                                 break;
                             case "3":
                                 timeRange.Start = new DateTime(2008, 4, 25, 10, 23, 0);
                                 timeRange.End = new DateTime(2008, 4, 28, 9, 2, 0);
-                                _chargeService.CalculateChargePeriods(timeRange);
+                                var totalDurationsDemo3 = _chargeService.CalculateChargePeriods(timeRange);
+                                var totalChargesDemo3 = _chargeService.CalculateCharges(totalDurationsDemo3, VehicleTypes.Car);
+                                foreach (var entry in totalChargesDemo3)
+                                {
+                                    Console.WriteLine(entry);
+                                }
                                 break;
                             case "9":
                                 break;

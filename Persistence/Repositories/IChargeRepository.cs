@@ -9,7 +9,7 @@ namespace Persistence.Repositories
     {
         List<TimeSpan> GetChargeThresholds();
 
-        double GetRates(VehicleTypes type);
+        double GetRates(TimeSpan startOfRange, VehicleTypes type);
 
         List<ChargeRange2> GetChargeRanges();
     }

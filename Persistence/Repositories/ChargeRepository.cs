@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Persistence.Repositories
 {
@@ -12,8 +13,7 @@ namespace Persistence.Repositories
     {
         private readonly List<TimeSpan> _chargeThresholds = new List<TimeSpan>();
         private readonly List<double> _charges = new List<double>();
-
-        private List<ChargeRange2> _ranges { get; set; }
+        private readonly List<ChargeRange2> _ranges = new List<ChargeRange2>();
 
         protected string _fileName = "ranges_json.txt";
 
@@ -23,23 +23,6 @@ namespace Persistence.Repositories
 
         public ChargeRepository()
         {
-            var amStartHour = 7;
-            var pmStartHour = 12;
-            var pmEndHour = 19;
-
-            var amStart = new TimeSpan(amStartHour, 0, 0);
-            var pmStart = new TimeSpan(pmStartHour, 0, 0);
-            var pmEnd = new TimeSpan(pmEndHour, 0, 0);
-
-            var chargeThresholds = new List<TimeSpan> {
-                amStart,
-                pmStart,
-                pmEnd};
-
-            var charges = new List<double> { 2.00, 2.50 };
-
-            _ranges = new List<ChargeRange2>();
-
 /*            for(var i=0; i< chargeThresholds.Count -1; i++)
             {
                 _newRange = new ChargeRange2
@@ -85,9 +68,36 @@ namespace Persistence.Repositories
 
             _ranges.Add(pmRange);
 
+            var allChargeThresholds = new List<TimeSpan> {};
+            
+            foreach(var range in _ranges)
+            {
+                allChargeThresholds.Add(range.Start);
+                allChargeThresholds.Add(range.End);
+            }
+
+            var chargeThresholds = allChargeThresholds
+                .GroupBy(p => p)
+                .Select(g => g.First())
+                .ToList();
+
             _chargeThresholds = chargeThresholds;
+            
+            var charges = new List<double> { 2.00, 2.50 };
+
             _charges = charges;
 
+        }
+
+        public double GetRates(TimeSpan startOfRange, VehicleTypes type)
+        {
+            double value;
+
+           _ranges
+                .FirstOrDefault(d => d.Start == startOfRange)
+                .FeeList.TryGetValue(type, out value);
+
+            return value;
         }
 
         public void ImportRanges()
@@ -100,34 +110,19 @@ namespace Persistence.Repositories
             }
         }
 
-        public double GetRates(VehicleTypes type)
-        {
-/*            var ex = new TimeSpan(0, 0, 0);
-            _ranges
-                .Where(d => d.Start.TotalMinutes <= ex.TotalMinutes &&
-            d.End.TotalMinutes > ex.TotalMinutes)
-                .Where(b => b.FeeList.Keys.SingleOrDefault(type));
-            
-            foreach(var value in _ranges)
-            {
-
-            }*/
-            return _charges[0];
-        }
-
-/*        public void InsertNote()
-        {
-            Console.Write("Range title: ");
-            string title = Console.ReadLine();
-            Console.Write("Range start: ");
-            string name = Console.ReadLine();
-            _newRange = new Range { };
-            _notepad.Add(_newNote); // inserting into object list
-            string newJsonNote = JsonSerializer.Serialize<Range>(_newNote); //inserting into JSON file
-            File.AppendAllLines(_fileNameJ, new[] { newJsonNote });
-            Console.Write($"-> New note inserted: \n{_newNote}");
-            //Console.Write($"-> New note inserted: \n{_newNote.ToString()}\n{newJsonNote}");
-        }*/
+        /*        public void InsertNote()
+                {
+                    Console.Write("Range title: ");
+                    string title = Console.ReadLine();
+                    Console.Write("Range start: ");
+                    string name = Console.ReadLine();
+                    _newRange = new Range { };
+                    _notepad.Add(_newNote); // inserting into object list
+                    string newJsonNote = JsonSerializer.Serialize<Range>(_newNote); //inserting into JSON file
+                    File.AppendAllLines(_fileNameJ, new[] { newJsonNote });
+                    Console.Write($"-> New note inserted: \n{_newNote}");
+                    //Console.Write($"-> New note inserted: \n{_newNote.ToString()}\n{newJsonNote}");
+                }*/
 
         public List<TimeSpan> GetChargeThresholds()
         {

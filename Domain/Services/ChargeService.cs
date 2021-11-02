@@ -26,7 +26,7 @@ namespace Domain.Services
             }
         }
         
-        public Dictionary<string, double> CalculateChargePeriods(TimeRange range)
+        public Dictionary<TimeSpan, double> CalculateChargePeriods(TimeRange range)
         {
             if (range.Start > range.End)
             {
@@ -71,7 +71,7 @@ namespace Domain.Services
 
             var splitDuration = new List<List<TimeSpan>>();
             var totalDuration = new List<TimeSpan>();
-            var durationsList = new Dictionary<string, double>();
+            var durationsList = new Dictionary<TimeSpan, double>();
 
             for (var k = 0; k < chargeThresholds.Count - 1; k++)
             {
@@ -92,19 +92,19 @@ namespace Domain.Services
                 var totalHours = Math.Floor(totalDuration[k].TotalHours);
                 var minutes = totalDuration[k].Minutes;
                 Console.WriteLine($"Charge for {totalHours}h {minutes}m (rate {k + 1})");
-
-                durationsList.Add($"rate {k + 1}", totalDuration[k].TotalMinutes);
+ 
+                durationsList.Add(chargeThresholds[k], totalDuration[k].TotalMinutes);
             }
 
             return durationsList;
         }
 
-        public List<double> CalculateCharges(Dictionary<string, double> totalDurations, VehicleTypes type)
+        public List<double> CalculateCharges(Dictionary<TimeSpan, double> totalDurations, VehicleTypes type)
         {
             var results = new List<double>();
-            var multiplier = _chargeRepository.GetRates(type);
             foreach(var entry in totalDurations)
             {
+                var multiplier = _chargeRepository.GetRates(entry.Key ,type);
                 var sum = multiplier * entry.Value / 60;
                 results.Add(sum);
             }
