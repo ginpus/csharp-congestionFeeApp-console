@@ -11,6 +11,6 @@ namespace Persistence.Repositories
 
         double GetRates(TimeSpan startOfRange, VehicleTypes type);
 
-        List<ChargeRange2> GetChargeRanges();
+        List<ChargePeriodMain> GetChargeRanges();
     }
 }

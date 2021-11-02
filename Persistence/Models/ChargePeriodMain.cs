@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Persistence.Models
 {
-    public class ChargeRange2
+    public class ChargePeriodMain
     {
         public Guid Id { get; set; }
         public string Alias { get; set; }

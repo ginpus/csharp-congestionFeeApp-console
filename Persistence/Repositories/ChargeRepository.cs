@@ -11,36 +11,18 @@ namespace Persistence.Repositories
 {
     public class ChargeRepository : IChargeRepository
     {
-        private readonly List<TimeSpan> _chargeThresholds = new List<TimeSpan>();
-        private readonly List<double> _charges = new List<double>();
-        private readonly List<ChargeRange2> _ranges = new List<ChargeRange2>();
+        private readonly List<TimeSpan> _periodThresholds = new List<TimeSpan>();
+        private readonly List<ChargePeriodMain> _periods = new List<ChargePeriodMain>();
 
         protected string _fileName = "ranges_json.txt";
 
-        public ChargeRange2 _newRange { get; set; }
+        public ChargePeriodMain _newPeriod { get; set; }
 
-        public string[] _savedRanges { get; set; }
+        public string[] _savedPeriods { get; set; }
 
         public ChargeRepository()
         {
-/*            for(var i=0; i< chargeThresholds.Count -1; i++)
-            {
-                _newRange = new ChargeRange2
-                {
-                    Id = Guid.NewGuid(),
-                    Alias = $"{i + 1} range",
-                    Start = chargeThresholds[i],
-                    End = chargeThresholds[i+1],
-                    FeeList = new Dictionary<VehicleTypes, double>()
-                };
-                foreach(VehicleTypes value in Enum.GetValues(typeof(VehicleTypes)))
-                {
-                    _newRange.FeeList.Add(value, 2.22);
-                }
-                _ranges.Add(_newRange);
-            }*/
-
-            var amRange = new ChargeRange2
+            var amPeriod = new ChargePeriodMain
             {
                 Id = Guid.NewGuid(),
                 Alias = "AM rate",
@@ -49,12 +31,12 @@ namespace Persistence.Repositories
                 FeeList = new Dictionary<VehicleTypes, double> ()
             };
 
-            amRange.FeeList.Add(VehicleTypes.Car, 2.00);
-            amRange.FeeList.Add(VehicleTypes.Motorbike, 1.00);
+            amPeriod.FeeList.Add(VehicleTypes.Car, 2.00);
+            amPeriod.FeeList.Add(VehicleTypes.Motorbike, 1.00);
 
-            _ranges.Add(amRange);
+            _periods.Add(amPeriod);
 
-            var pmRange = new ChargeRange2
+            var pmPeriod = new ChargePeriodMain
             {
                 Id = Guid.NewGuid(),
                 Alias = "PM rate",
@@ -63,80 +45,56 @@ namespace Persistence.Repositories
                 FeeList = new Dictionary<VehicleTypes, double>()
             };
             
-            pmRange.FeeList.Add(VehicleTypes.Car, 2.50);
-            pmRange.FeeList.Add(VehicleTypes.Motorbike, 1.00);
+            pmPeriod.FeeList.Add(VehicleTypes.Car, 2.50);
+            pmPeriod.FeeList.Add(VehicleTypes.Motorbike, 1.00);
 
-            _ranges.Add(pmRange);
+            _periods.Add(pmPeriod);
 
-            var allChargeThresholds = new List<TimeSpan> {};
+            var allPeriodThresholds = new List<TimeSpan> {};
             
-            foreach(var range in _ranges)
+            foreach(var range in _periods)
             {
-                allChargeThresholds.Add(range.Start);
-                allChargeThresholds.Add(range.End);
+                allPeriodThresholds.Add(range.Start);
+                allPeriodThresholds.Add(range.End);
             }
 
-            var chargeThresholds = allChargeThresholds
+            var periodThresholds = allPeriodThresholds
                 .GroupBy(p => p)
                 .Select(g => g.First())
                 .ToList();
 
-            _chargeThresholds = chargeThresholds;
-            
-            var charges = new List<double> { 2.00, 2.50 };
-
-            _charges = charges;
-
+            _periodThresholds = periodThresholds;
         }
 
-        public double GetRates(TimeSpan startOfRange, VehicleTypes type)
+        public double GetRates(TimeSpan startOfPeriod, VehicleTypes type)
         {
-            double value;
+            double rate;
 
-           _ranges
-                .FirstOrDefault(d => d.Start == startOfRange)
-                .FeeList.TryGetValue(type, out value);
+           _periods
+                .FirstOrDefault(d => d.Start == startOfPeriod)
+                .FeeList.TryGetValue(type, out rate);
 
-            return value;
+            return rate;
+        }
+
+        public List<TimeSpan> GetPeriodThresholds()
+        {
+            return _periodThresholds;
+        }
+
+        public List<ChargePeriodMain> GetChargeRanges()
+        {
+            return _periods;
         }
 
         public void ImportRanges()
         {
-            _savedRanges = File.ReadAllLines(_fileName);
-            foreach (var line in _savedRanges)
+            _savedPeriods = File.ReadAllLines(_fileName);
+            foreach (var line in _savedPeriods)
             {
-                var entry = JsonSerializer.Deserialize<ChargeRange2>(line);
-                _ranges.Add(entry);
+                var period = JsonSerializer.Deserialize<ChargePeriodMain>(line);
+                _periods.Add(period);
             }
-        }
-
-        /*        public void InsertNote()
-                {
-                    Console.Write("Range title: ");
-                    string title = Console.ReadLine();
-                    Console.Write("Range start: ");
-                    string name = Console.ReadLine();
-                    _newRange = new Range { };
-                    _notepad.Add(_newNote); // inserting into object list
-                    string newJsonNote = JsonSerializer.Serialize<Range>(_newNote); //inserting into JSON file
-                    File.AppendAllLines(_fileNameJ, new[] { newJsonNote });
-                    Console.Write($"-> New note inserted: \n{_newNote}");
-                    //Console.Write($"-> New note inserted: \n{_newNote.ToString()}\n{newJsonNote}");
-                }*/
-
-        public List<TimeSpan> GetPeriodThresholds()
-        {
-            return _chargeThresholds;
-        }
-
-        public List<double> GetCharges()
-        {
-            return _charges;
-        }
-
-        public List<ChargeRange2> GetChargeRanges()
-        {
-            return _ranges;
         }
     }
 }

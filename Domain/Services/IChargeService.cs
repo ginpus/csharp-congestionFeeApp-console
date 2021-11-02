@@ -8,12 +8,9 @@ namespace Domain.Services
 {
     public interface IChargeService
     {
-        //List<double> CalculateCharges(Dictionary<TimeSpan, double> totalDurations, VehicleTypes type);
-        List<PeriodTotalCharge> CalculateCharges(List<ChargeRange> totalDurations, VehicleTypes type);
-        
-        //Dictionary<TimeSpan, double> CalculateChargePeriods(TimeRange range);
+        List<PeriodTotalCharge> CalculateCharges(List<ChargePeriod> totalDurations, VehicleTypes type);
 
-        List<ChargeRange> CalculateChargePeriods(TimeRange range);
+        List<ChargePeriod> CalculateChargePeriods(TimeRange range);
 
         double CalculateTotalCharge(List<PeriodTotalCharge> periodTotalCharges);
 

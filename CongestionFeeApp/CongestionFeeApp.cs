@@ -25,7 +25,7 @@ namespace CongestionFeeApp
             DateTime startTime;
             DateTime endTime;
             TimeRange timeRange = new TimeRange { };
-            List<ChargeRange> totalDurations;
+            List<ChargePeriod> totalDurations;
             List<PeriodTotalCharge> charges;
             double totalCharge;
             bool demoMode;
@@ -95,7 +95,7 @@ namespace CongestionFeeApp
                             double charge = Convert.ToDouble(Console.ReadLine());
                             fees.Add(value, charge);
                         }
-                        var newRange = new ChargeRange
+                        var newRange = new ChargePeriod
                         {
                             Id = Guid.NewGuid(),
                             Alias = alias,

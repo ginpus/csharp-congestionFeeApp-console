@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Contracts.Models
 {
-    public class ChargeRange
+    public class ChargePeriod
     {
         public Guid Id { get; set; }
         public string Alias { get; set; }

@@ -10,9 +10,9 @@ namespace Domain
 {
     public static class Extensions
     {
-        public static ChargeRange AsDto(this ChargeRange2 model)
+        public static ChargePeriod AsDto(this ChargePeriodMain model)
         {
-            return new ChargeRange
+            return new ChargePeriod
             {
                 Id = model.Id,
                 Alias = model.Alias,

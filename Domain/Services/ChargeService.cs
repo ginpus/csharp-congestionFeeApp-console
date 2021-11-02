@@ -19,7 +19,7 @@ namespace Domain.Services
             _chargeRepository = chargeRepository;
         }
         
-        public List<ChargeRange> CalculateChargePeriods(TimeRange range)
+        public List<ChargePeriod> CalculateChargePeriods(TimeRange range)
         {
             if (range.Start > range.End)
             {
@@ -63,12 +63,12 @@ namespace Domain.Services
 
             var chargeRanges = _chargeRepository.GetChargeRanges();
 
-            var splitDuration = new List<List<TimeSpan>>();
+            var periodDuration = new List<List<TimeSpan>>();
             var totalDuration = new List<TimeSpan>();
 
             for (var k = 0; k < _periodThresholds.Count - 1; k++)
             {
-                splitDuration.Add(new List<TimeSpan>());
+                periodDuration.Add(new List<TimeSpan>());
                 for (var i = 0; i < _chargeDays.Count; i++)
                 {
                     for (var l = 0; l < _chargeDays[i].Thresholds.Count - 1; l++)
@@ -76,13 +76,13 @@ namespace Domain.Services
                         if (_chargeDays[i].Thresholds[l].TotalMinutes >= _periodThresholds[k].TotalMinutes &&
                            _chargeDays[i].Thresholds[l].TotalMinutes < _periodThresholds[k + 1].TotalMinutes)
                         {
-                            var chargeSplitDuration = _chargeDays[i].Thresholds[l + 1] - _chargeDays[i].Thresholds[l];
-                            splitDuration[k].Add(chargeSplitDuration);
+                            var chargePeriodDuration = _chargeDays[i].Thresholds[l + 1] - _chargeDays[i].Thresholds[l];
+                            periodDuration[k].Add(chargePeriodDuration);
                         }
                     }
                 }
-                totalDuration.Add(new TimeSpan(splitDuration[k].Sum(r => r.Ticks)));
-                chargeRanges[k].TotalDuration = new TimeSpan(splitDuration[k].Sum(r => r.Ticks));
+                totalDuration.Add(new TimeSpan(periodDuration[k].Sum(r => r.Ticks)));
+                chargeRanges[k].TotalDuration = new TimeSpan(periodDuration[k].Sum(r => r.Ticks));
             }
 
             return chargeRanges
@@ -90,19 +90,19 @@ namespace Domain.Services
                 .ToList();
         }
 
-        public List<PeriodTotalCharge> CalculateCharges(List<ChargeRange> totalDurations, VehicleTypes type)
+        public List<PeriodTotalCharge> CalculateCharges(List<ChargePeriod> totalDurations, VehicleTypes type)
         {
 
             var results = new List<PeriodTotalCharge>();
-            foreach (var entry in totalDurations)
+            foreach (var chargePeriod in totalDurations)
             {
-                var multiplier = _chargeRepository.GetRates(entry.Start ,type);
-                var duration = entry.TotalDuration.TotalMinutes;
-                var sum = Math.Floor((multiplier * duration / 60)*10)/10;
+                var rate = _chargeRepository.GetRates(chargePeriod.Start ,type);
+                var duration = chargePeriod.TotalDuration.TotalMinutes;
+                var sum = Math.Floor((rate * duration / 60)*10)/10;
                 results.Add(new PeriodTotalCharge
                 {
-                    Alias = entry.Alias,
-                    TotalDuration = entry.TotalDuration,
+                    Alias = chargePeriod.Alias,
+                    TotalDuration = chargePeriod.TotalDuration,
                     TotalCharge = sum
                 });
             }
