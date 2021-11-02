@@ -1,4 +1,5 @@
 ﻿using Contracts.Enums;
+using Contracts.Models;
 using Domain.Models;
 using Persistence.Repositories;
 using System;
@@ -18,7 +19,7 @@ namespace Domain.Services
             _chargeRepository = chargeRepository;
         }
         
-        public Dictionary<TimeSpan, double> CalculateChargePeriods(TimeRange range)
+        public List<ChargeRange> CalculateChargePeriods(TimeRange range)
         {
             if (range.Start > range.End)
             {
@@ -60,9 +61,10 @@ namespace Domain.Services
                     .OrderBy(t => t.TotalMinutes).ToList();
             }
 
+            var chargeRanges = _chargeRepository.GetChargeRanges();
+
             var splitDuration = new List<List<TimeSpan>>();
             var totalDuration = new List<TimeSpan>();
-            var periodDurations = new Dictionary<TimeSpan, double>();
 
             for (var k = 0; k < _periodThresholds.Count - 1; k++)
             {
@@ -80,25 +82,31 @@ namespace Domain.Services
                     }
                 }
                 totalDuration.Add(new TimeSpan(splitDuration[k].Sum(r => r.Ticks)));
-                var totalHours = Math.Floor(totalDuration[k].TotalHours);
-                var minutes = totalDuration[k].Minutes;
-                Console.WriteLine($"Charge for {totalHours}h {minutes}m (rate {k + 1})");
-
-                periodDurations.Add(_periodThresholds[k], totalDuration[k].TotalMinutes);
+                chargeRanges[k].TotalDuration = new TimeSpan(splitDuration[k].Sum(r => r.Ticks));
             }
 
-            return periodDurations;
+            return chargeRanges
+                .Select(c => c.AsDto())
+                .ToList();
         }
 
-        public List<double> CalculateCharges(Dictionary<TimeSpan, double> totalDurations, VehicleTypes type)
+        public List<PeriodTotalCharge> CalculateCharges(List<ChargeRange> totalDurations, VehicleTypes type)
         {
-            var results = new List<double>();
-            foreach(var entry in totalDurations)
+
+            var results = new List<PeriodTotalCharge>();
+            foreach (var entry in totalDurations)
             {
-                var multiplier = _chargeRepository.GetRates(entry.Key ,type);
-                var sum = multiplier * entry.Value / 60;
-                results.Add(sum);
+                var multiplier = _chargeRepository.GetRates(entry.Start ,type);
+                var duration = entry.TotalDuration.TotalMinutes;
+                var sum = Math.Floor((multiplier * duration / 60)*10)/10;
+                results.Add(new PeriodTotalCharge
+                {
+                    Alias = entry.Alias,
+                    TotalDuration = entry.TotalDuration,
+                    TotalCharge = sum
+                });
             }
+            
             return results;
         }
 
@@ -138,6 +146,16 @@ namespace Domain.Services
         private static bool IsChargeableDay(int dayOfWeek)
         {
             return Enum.IsDefined(typeof(ChargeableDays), dayOfWeek);
+        }
+
+        public double CalculateTotalCharge(List<PeriodTotalCharge> periodTotalCharges)
+        {
+            double totalCharge = 0;
+            foreach (var entry in periodTotalCharges)
+            {
+                totalCharge += entry.TotalCharge;
+            };
+            return totalCharge;
         }
     }
 }

@@ -25,8 +25,10 @@ namespace CongestionFeeApp
             DateTime startTime;
             DateTime endTime;
             TimeRange timeRange = new TimeRange { };
-            Dictionary<TimeSpan, double> totalDurations;
-            List<double> totalCharges;
+            List<ChargeRange> totalDurations;
+            List<PeriodTotalCharge> charges;
+            double totalCharge;
+            bool demoMode;
 
             while (true)
             {
@@ -68,14 +70,16 @@ namespace CongestionFeeApp
                         timeRange.End = endTime;
 
                         totalDurations = _chargeService.CalculateChargePeriods(timeRange);
-                        totalCharges = _chargeService.CalculateCharges(totalDurations, type);
-                        foreach(var entry in totalCharges)
+                        charges = _chargeService.CalculateCharges(totalDurations, type);
+                        foreach (var entry in charges)
                         {
                             Console.WriteLine(entry);
                         }
-
+                        totalCharge = _chargeService.CalculateTotalCharge(charges);
+                        Console.WriteLine($"Total charge: £{ totalCharge.ToString("0.00")}");
                         Console.WriteLine("-----------------------------");
                         break;
+
                     case "2":
                         Console.WriteLine("Enter the name for a new range: ");
                         string alias = Console.ReadLine();
@@ -101,50 +105,66 @@ namespace CongestionFeeApp
                         };
                         Console.WriteLine("-----------------------------");
                         break;
+
                     case "8":
-                        Console.WriteLine("Available demos:");
-                        Console.WriteLine("1 - Car: 24/04/2008 11:32 - 24/04/2008 14:42");
-                        Console.WriteLine("2 - Motorbike: 24/04/2008 17:00 - 24/04/2008 22:11"); ;
-                        Console.WriteLine("3 - Van: 25/04/2008 10:23 - 28/04/2008 09:02");
-                        Console.WriteLine("9 - Exit Demo");
-                        var chosenDemo = Console.ReadLine();
-                        switch (chosenDemo)
+                        demoMode = true;
+                        while (demoMode)
                         {
-                            case "1":
-                                timeRange.Start = new DateTime(2008, 4, 24, 11, 32, 0);
-                                timeRange.End = new DateTime(2008, 4, 24, 14, 42, 0);
-                                var totalDurationsDemo1 = _chargeService.CalculateChargePeriods(timeRange);
-                                var totalChargesDemo1 = _chargeService.CalculateCharges(totalDurationsDemo1, VehicleTypes.Car);
-                                foreach (var entry in totalChargesDemo1)
-                                {
-                                    Console.WriteLine(entry);
-                                }
-                                break;
-                            case "2":
-                                timeRange.Start = new DateTime(2008, 4, 24, 17, 0, 0);
-                                timeRange.End = new DateTime(2008, 4, 24, 22, 11, 0);
-                                var totalDurationsDemo2 = _chargeService.CalculateChargePeriods(timeRange);
-                                var totalChargesDemo2 = _chargeService.CalculateCharges(totalDurationsDemo2, VehicleTypes.Motorbike);
-                                foreach (var entry in totalChargesDemo2)
-                                {
-                                    Console.WriteLine(entry);
-                                }
-                                break;
-                            case "3":
-                                timeRange.Start = new DateTime(2008, 4, 25, 10, 23, 0);
-                                timeRange.End = new DateTime(2008, 4, 28, 9, 2, 0);
-                                var totalDurationsDemo3 = _chargeService.CalculateChargePeriods(timeRange);
-                                var totalChargesDemo3 = _chargeService.CalculateCharges(totalDurationsDemo3, VehicleTypes.Car);
-                                foreach (var entry in totalChargesDemo3)
-                                {
-                                    Console.WriteLine(entry);
-                                }
-                                break;
-                            case "9":
-                                break;
+                            Console.WriteLine("Available demos:");
+                            Console.WriteLine("1 - Car: 24/04/2008 11:32 - 24/04/2008 14:42");
+                            Console.WriteLine("2 - Motorbike: 24/04/2008 17:00 - 24/04/2008 22:11"); ;
+                            Console.WriteLine("3 - Van: 25/04/2008 10:23 - 28/04/2008 09:02");
+                            Console.WriteLine("9 - Exit Demo");
+                            var chosenDemo = Console.ReadLine();
+                            switch (chosenDemo)
+                            {
+                                case "1":
+                                    timeRange.Start = new DateTime(2008, 4, 24, 11, 32, 0);
+                                    timeRange.End = new DateTime(2008, 4, 24, 14, 42, 0);
+                                    totalDurations = _chargeService.CalculateChargePeriods(timeRange);
+                                    charges = _chargeService.CalculateCharges(totalDurations, VehicleTypes.Car);
+                                    foreach (var entry in charges)
+                                    {
+                                        Console.WriteLine(entry);
+                                    }
+                                    totalCharge = _chargeService.CalculateTotalCharge(charges);
+                                    Console.WriteLine($"Total charge: £{ totalCharge.ToString("0.00")}");
+                                    break;
+
+                                case "2":
+                                    timeRange.Start = new DateTime(2008, 4, 24, 17, 0, 0);
+                                    timeRange.End = new DateTime(2008, 4, 24, 22, 11, 0);
+                                    totalDurations = _chargeService.CalculateChargePeriods(timeRange);
+                                    charges = _chargeService.CalculateCharges(totalDurations, VehicleTypes.Motorbike);
+                                    foreach (var entry in charges)
+                                    {
+                                        Console.WriteLine(entry);
+                                    }
+                                    totalCharge = _chargeService.CalculateTotalCharge(charges);
+                                    Console.WriteLine($"Total charge: £{ totalCharge.ToString("0.00")}");
+                                    break;
+
+                                case "3":
+                                    timeRange.Start = new DateTime(2008, 4, 25, 10, 23, 0);
+                                    timeRange.End = new DateTime(2008, 4, 28, 9, 2, 0);
+                                    totalDurations = _chargeService.CalculateChargePeriods(timeRange);
+                                    charges = _chargeService.CalculateCharges(totalDurations, VehicleTypes.Car);
+                                    foreach (var entry in charges)
+                                    {
+                                        Console.WriteLine(entry);
+                                    }
+                                    totalCharge = _chargeService.CalculateTotalCharge(charges);
+                                    Console.WriteLine($"Total charge: £{ totalCharge.ToString("0.00")}");
+                                    break;
+
+                                case "9":
+                                    demoMode = false;
+                                    break;
+                            }
                         }
-                        Console.WriteLine("-----------------------------");
+                        Console.WriteLine("--------------Exiting demo mode---------------");
                         break;
+
                     case "9":
                         Console.WriteLine("The program ended");
                         return Task.CompletedTask;
