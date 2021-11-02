@@ -40,7 +40,7 @@ namespace Persistence.Repositories
 
             _ranges = new List<ChargeRange2>();
 
-            for(var i=0; i< chargeThresholds.Count -1; i++)
+/*            for(var i=0; i< chargeThresholds.Count -1; i++)
             {
                 _newRange = new ChargeRange2
                 {
@@ -50,12 +50,40 @@ namespace Persistence.Repositories
                     End = chargeThresholds[i+1],
                     FeeList = new Dictionary<VehicleTypes, double>()
                 };
-                foreach(VehicleTypes value in (Array)Enum.GetValues(typeof(VehicleTypes)))
+                foreach(VehicleTypes value in Enum.GetValues(typeof(VehicleTypes)))
                 {
                     _newRange.FeeList.Add(value, 2.22);
                 }
                 _ranges.Add(_newRange);
-            }
+            }*/
+
+            var amRange = new ChargeRange2
+            {
+                Id = Guid.NewGuid(),
+                Alias = "AM rate",
+                Start = new TimeSpan(7,0,0),
+                End = new TimeSpan(12, 0, 0),
+                FeeList = new Dictionary<VehicleTypes, double> ()
+            };
+
+            amRange.FeeList.Add(VehicleTypes.Car, 2.00);
+            amRange.FeeList.Add(VehicleTypes.Motorbike, 1.00);
+
+            _ranges.Add(amRange);
+
+            var pmRange = new ChargeRange2
+            {
+                Id = Guid.NewGuid(),
+                Alias = "PM rate",
+                Start = new TimeSpan(12, 0, 0),
+                End = new TimeSpan(19, 0, 0),
+                FeeList = new Dictionary<VehicleTypes, double>()
+            };
+            
+            pmRange.FeeList.Add(VehicleTypes.Car, 2.50);
+            pmRange.FeeList.Add(VehicleTypes.Motorbike, 1.00);
+
+            _ranges.Add(pmRange);
 
             _chargeThresholds = chargeThresholds;
             _charges = charges;
@@ -109,6 +137,11 @@ namespace Persistence.Repositories
         public List<double> GetCharges()
         {
             return _charges;
+        }
+
+        public List<ChargeRange2> GetChargeRanges()
+        {
+            return _ranges;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Contracts.Enums;
+using Persistence.Models;
 using System;
 using System.Collections.Generic;
 
@@ -9,5 +10,7 @@ namespace Persistence.Repositories
         List<TimeSpan> GetChargeThresholds();
 
         double GetRates(VehicleTypes type);
+
+        List<ChargeRange2> GetChargeRanges();
     }
 }

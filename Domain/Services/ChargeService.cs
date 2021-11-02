@@ -46,6 +46,7 @@ namespace Domain.Services
 
             var chargeThresholds = _chargeRepository.GetChargeThresholds();
 
+
             for (var i = 0; i < chargeDays.Count; i++)
             {
                 for (var j = 0; j < chargeThresholds.Count; j++)
